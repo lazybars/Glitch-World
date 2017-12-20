@@ -3,6 +3,9 @@ using System.Collections;
 
 public class PlayerController : MonoBehaviour
 {
+    public GameObject objectToSpawn;
+    public float spawnDistance = 0.1f;
+
     public float walkSpeed = 2;
     public float runSpeed = 6;
     public float skateSpeed = 12;
@@ -23,8 +26,10 @@ public class PlayerController : MonoBehaviour
     CharacterController controller;
     Rigidbody rig;
 
-    void Start()
-    {
+    void Start() {
+        if (!objectToSpawn) {
+            objectToSpawn = Resources.Load("ESphere") as GameObject;
+        }
         animator = GetComponent<Animator>();
         cameraT = Camera.main.transform;
         controller = GetComponent<CharacterController>();
@@ -68,10 +73,25 @@ public class PlayerController : MonoBehaviour
             print("equipping board");
             skateBoard();
         }
+
+        if (Input.GetKeyDown(KeyCode.X)) {
+            print("spawning object");
+            spawnObjectInFront();
+        }
     }
 
     void OnGUI() {
-        GUI.Box(new Rect(100, 10, Screen.width / 5, Screen.height / 10), "press z to board");
+        GUI.Box(new Rect(100, 10, Screen.width / 5, Screen.height / 10), "z-board, x-spawn");
+    }
+
+    void spawnObjectInFront() {
+        Vector3 playerPos = transform.position;
+        Vector3 playerDirection = transform.forward;
+        Quaternion playerRotation = transform.rotation;
+
+        Vector3 spawnPos = playerPos + playerDirection * spawnDistance;
+
+        Instantiate(objectToSpawn, spawnPos, playerRotation);
     }
 
     void skateBoard () {
