@@ -21,6 +21,8 @@ public class PlayerController : MonoBehaviour
 
     bool hasBoard = false;
 
+    CycleObjects cycler; 
+
     Animator animator;
     Transform cameraT;
     CharacterController controller;
@@ -34,6 +36,7 @@ public class PlayerController : MonoBehaviour
         cameraT = Camera.main.transform;
         controller = GetComponent<CharacterController>();
         rig = GetComponent<Rigidbody>();
+        StartCoroutine(waitAndRemoveGui(2f));
     }
 
     void Update() {
@@ -67,8 +70,10 @@ public class PlayerController : MonoBehaviour
             velocityY = 0;
         }
 
+        keyActions();
+    }
 
-
+    void keyActions() {
         if (Input.GetKeyDown(KeyCode.Z)) {
             print("equipping board");
             skateBoard();
@@ -78,10 +83,24 @@ public class PlayerController : MonoBehaviour
             print("spawning object");
             spawnObjectInFront();
         }
+
+        if (Input.GetKey(KeyCode.C)) {
+            print("doing action");
+            animator.SetTrigger("IsHumping");
+        }
     }
 
+    bool guiActive = true;
     void OnGUI() {
-        GUI.Box(new Rect(100, 10, Screen.width / 5, Screen.height / 10), "z-board, x-spawn");
+        if (guiActive) {
+            GUI.Box(new Rect(((Screen.width / 2) - 300f), Screen.height - 100, 300, 100), "press z to board | x to spawn | c to...do that");
+        }
+    }
+
+    IEnumerator waitAndRemoveGui(float time) {
+        yield return new WaitForSeconds(time);
+        guiActive = false;
+        
     }
 
     void spawnObjectInFront() {
@@ -95,11 +114,9 @@ public class PlayerController : MonoBehaviour
     }
 
     void skateBoard () {
-        hasBoard = !hasBoard;
-        
+        hasBoard = !hasBoard;        
         if (hasBoard) {
             animator.SetBool("IsOnBoard", true);
-            //  rig.AddRelativeForce(Vector3.down * 10f);
         } else {
             animator.SetBool("IsOnBoard", false);
         }
