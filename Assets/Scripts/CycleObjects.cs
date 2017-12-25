@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class CycleObjects : MonoBehaviour {
+    public float spawnDistance;
     public float showInterval = 1;
     public GameObject[] cyclicObjects;
 
@@ -43,7 +44,7 @@ public class CycleObjects : MonoBehaviour {
     IEnumerator showPotentialGameObjects() {
         for (int i = 0; i < cyclicObjects.Length; i++) {
             //GameObject instantiatedObj = Instantiate(cyclicObjects[i], new Vector3(transform.position.x, transform.position.y, transform.position.z), Quaternion.identity);
-            spawnObjectInFront(10f, cyclicObjects[i]);
+            spawnObjectInFront(spawnDistance, cyclicObjects[i]);
             yield return new WaitForSeconds(showInterval);
         }
     }

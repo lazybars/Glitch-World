@@ -10,6 +10,7 @@ public class PlayerController : MonoBehaviour
     public float runSpeed = 6;
     public float skateSpeed = 12;
     public float gravity = -12;
+    public float jumpHeight = 1;
 
     public float turnSmoothTime = 0.2f;
     float turnSmoothVelocity;
@@ -44,6 +45,11 @@ public class PlayerController : MonoBehaviour
         Vector2 input = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
         Vector2 inputDir = input.normalized;
 
+        if (Input.GetKeyDown (KeyCode.Space))
+        {
+            Jump();
+        }
+
         if (inputDir != Vector2.zero) {
             float targetRotation = Mathf.Atan2(inputDir.x, inputDir.y) * Mathf.Rad2Deg + cameraT.eulerAngles.y;
             transform.eulerAngles = Vector3.up * Mathf.SmoothDampAngle(transform.eulerAngles.y, targetRotation, ref turnSmoothVelocity, turnSmoothTime);
@@ -71,6 +77,16 @@ public class PlayerController : MonoBehaviour
         }
 
         keyActions();
+
+    }
+
+    void Jump()
+    {
+        if (controller.isGrounded)
+        {
+            float jumpVelocity = Mathf.Sqrt(-2 * gravity * jumpHeight);
+            velocityY = jumpVelocity;
+        }
     }
 
     void keyActions() {
